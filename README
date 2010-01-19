@@ -1,0 +1,40 @@
+#-------------------------------------------------------------------------------------------------
+# Name: Image Stitcher
+# Author: Stephen Akiki
+# Website: http://akiscode.com
+# Language: Python
+# Usage: 
+#  python sparkdownloader.py [options] "image1" "image2" etc
+#     
+# Dependencies:
+#  none
+#
+# Disclaimer:
+#  By using this program you do so at your own risk. I assume no liability
+#  for anything that happens to you because you used this program.
+#  
+#  Enjoy
+#
+# License - GNU GPL (See LICENSE.txt for full text):
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Find this useful?
+#  If you want to use this code (in compliance with the GPL) then I would
+#  appreciate it if you included this somewhere in your code comments header:
+#  
+#   Thanks to Stephen Akiki (http://akiscode.com) for image stitcher code
+#
+#-------------------------------------------------------------------------------------------------
+# Copyright (C) 2010 Stephen Akiki. All rights reserved.
+#-------------------------------------------------------------------------------------------------
