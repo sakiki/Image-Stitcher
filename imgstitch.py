@@ -56,12 +56,13 @@ class Argument:
     self.delete = 0
     self.f = ""
     self.s = 0
+		self.c = ""
 
 
 def usage():
   print """
   
-Usage: python imgstitch.py  [OPTION]... [FILES]
+Usage: python imgstitch.py  [OPTION]... [FILENAME] [FILES]
 Combine together [FILES] into one image
 Example: python imgstitch.py image1.jpg image2.jpg
 
@@ -70,26 +71,32 @@ Example: python imgstitch.py image1.jpg image2.jpg
 -D			Scan entire directory instead of multiple files.
 -t [TYPE1]		Only get images of extension TYPE.  
 --delete		Delete images used to make up final image after.
--f [FILENAME]		Save final image as [FILENAME].
 -s			Read in arguments from Standard Input.
+-c			Change background filler color
 """
 
 
 args = Argument()
 MasterWidth = 0
 MasterHeight = 0
+filename = ""
 
 # List that holds all the image files
 ImageFileList = []
 
 
 def main(argv):
-  global args, MasterWidth, MasterHeight, ImageFileList
+  global args, MasterWidth, MasterHeight, ImageFileList, filename
   try:
-    opts, args_files = getopt.getopt(argv, "b:Dt:sf", ["delete", "help"])
+			opts, args_files = getopt.getopt(argv, "b:Dt:sc:", ["delete", "help"])
+      if len(args_files) <= 1:
+        usage()
+        sys.exit(-1)
+
+      filename = args_files.pop(0)
     
   except getopt.GetoptError:
-    print 'Usage: python imgstitch.py  [OPTION]... [FILES]'
+    print 'Usage: python imgstitch.py  [OPTION]... [FILENAME] [FILES]'
     print "Try 'python imgstitch.py --help' for more info"
     sys.exit(-1)
     
@@ -106,12 +113,9 @@ def main(argv):
       
     elif opt == '--delete':
       args.delete = 1
-    
-    elif opt == '-f':
-      args.f = arg
       
     elif opt == '-s':
-      args.s = 1
+      args.s = arg
     
     elif opt == '--help':
       usage()
@@ -122,6 +126,7 @@ def main(argv):
     print 'read from stdin' # update later
     
   else:
+
     for x in args_files:
       try:
         im = Image.open(x)
@@ -138,7 +143,14 @@ def main(argv):
         
       except:
         raise
-      
+    final_image = Image.new("RGB", (MasterWidth, MasterHeight))
+    offset = 0
+    for x in ImageFileList:
+     temp_image = Image.open(x)
+     final_image.paste(temp_image, (offset, 0))
+     offset += temp_image.size[0]
+
+    final_image.save(filename)
       
       
     
@@ -149,6 +161,9 @@ if __name__ == "__main__":
     print 'One of the files listed is not a valid image file'
     sys.exit(-1)
     
+  except SystemExit:
+    pass
+
   except:
     import traceback
     traceback.print_exc()
