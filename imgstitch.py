@@ -7,7 +7,7 @@
 # Website: http://akiscode.com
 # Language: Python
 # Usage: 
-#  python sparkdownloader.py [options] "image1" "image2" etc
+#  python sparkdownloader.py [options] [FinalImageFilename] "image1" "image2" etc
 #     
 # Dependencies:
 #  none
