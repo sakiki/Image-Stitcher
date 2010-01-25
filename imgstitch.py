@@ -8,6 +8,7 @@
 # Language: Python
 # Usage: 
 #  python sparkdownloader.py [options] [FinalImageFilename] "image1" "image2" etc
+#  python imgstitch.py  [OPTION] -D [DIRECTORY] [FILENAME
 #     
 # Dependencies:
 #  PIL 
@@ -58,7 +59,7 @@ class Argument:
     self.delete = 0
     self.f = ""
     self.s = 0
-    self.c = ""
+    self.c = "black"
 
 
 def usage():
@@ -72,7 +73,7 @@ python imgstitch.py  [OPTION] -D [DIRECTORY] [FILENAME]
 
 -b [WIDTH]			Final image is no wider than WIDTH images.
 -D Directory		Scan entire directory instead of multiple files.
--t [TYPE1]			Only get images of extension TYPE.  Used in conjunction with -D
+-t [TYPE1]			Only get images of extension TYPE.  Only used in conjunction with -D
 --delete			Delete images used to make up final image after.
 -s					Read in arguments from Standard Input.
 -c					Change background filler color
@@ -114,6 +115,9 @@ def main(argv):
     elif opt == '-v':
       args.v = 1      
     
+    elif opt == '-c':
+      args.c = arg
+
     elif opt == '-D':
       if not os.path.exists (arg):
         print 'Directory does not exist'
@@ -139,6 +143,7 @@ def main(argv):
     
   else:
     filename = args_files.pop(0)
+    final_image = Image.new("RGB", (MasterWidth, MasterHeight), args.c)
 
 
     if args.D != "":
@@ -173,7 +178,7 @@ def main(argv):
         else:
           raise
 
-    final_image = Image.new("RGB", (MasterWidth, MasterHeight))
+    
     offset = 0
     for x in ImageFileList:
      temp_image = Image.open(x)
@@ -193,6 +198,10 @@ if __name__ == "__main__":
     
   except SystemExit:
     pass
+
+  except ValueError:
+    print 'That color value is not valid'
+
 
   except:
     import traceback

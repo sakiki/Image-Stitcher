@@ -1,3 +1,4 @@
+
 #-------------------------------------------------------------------------------------------------
 # Name: Image Stitcher
 # Author: Stephen Akiki
@@ -5,9 +6,10 @@
 # Language: Python
 # Usage: 
 #  python sparkdownloader.py [options] [FinalImageFilename] "image1" "image2" etc
+#  python imgstitch.py  [OPTION] -D [DIRECTORY] [FILENAME
 #     
 # Dependencies:
-#  PIL
+#  PIL 
 #
 # Disclaimer:
 #  By using this program you do so at your own risk. I assume no liability
