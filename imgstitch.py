@@ -54,7 +54,7 @@ class Argument:
     self.v = 0
     self.b = None
     self.D = "" 
-    self.t = []
+    self.t = '*'
     self.delete = 0
     self.f = ""
     self.s = 0
@@ -65,18 +65,18 @@ def usage():
   print """
   
 Usage: python imgstitch.py  [OPTION]... [FILENAME] [FILES]
-       python imgstitch.py  [OPTION] -D [DIRECTORY] [FILENAME]
 Combine together [FILES] into one image
 Example: python imgstitch.py image1.jpg image2.jpg
 
+python imgstitch.py  [OPTION] -D [DIRECTORY] [FILENAME]
 
--b [WIDTH]		Final image is no wider than WIDTH images.
+-b [WIDTH]			Final image is no wider than WIDTH images.
 -D Directory		Scan entire directory instead of multiple files.
--t [TYPE1]		Only get images of extension TYPE.  
---delete		Delete images used to make up final image after.
--s			Read in arguments from Standard Input.
--c			Change background filler color
--v			Verbose output
+-t [TYPE1]			Only get images of extension TYPE.  Used in conjunction with -D
+--delete			Delete images used to make up final image after.
+-s					Read in arguments from Standard Input.
+-c					Change background filler color
+-v					Verbose output
 """
 
 
@@ -84,6 +84,8 @@ args = Argument()
 MasterWidth = 0
 MasterHeight = 0
 filename = ""
+deletename = False 
+
 
 # List that holds all the image files
 ImageFileList = []
@@ -95,7 +97,7 @@ def vprint(str):
 
 
 def main(argv):
-  global args, MasterWidth, MasterHeight, ImageFileList, filename
+  global args, MasterWidth, MasterHeight, ImageFileList, filename, deletename
   try:
       opts, args_files = getopt.getopt(argv, "vb:D:t:sc:", ["delete", "help"])
 
@@ -119,7 +121,7 @@ def main(argv):
       args.D = arg 
     
     elif opt == '-t':
-      args.t.append(arg)
+      args.t = arg
       
     elif opt == '--delete':
       args.delete = 1
@@ -138,17 +140,15 @@ def main(argv):
   else:
     filename = args_files.pop(0)
 
+
     if args.D != "":
       import glob
-      args_files = glob.glob(os.path.join(args.D,  '*.*'))
+      args_files = glob.glob((os.path.join(args.D,  ('*.'+ args.t))))
       vprint('Finding all files in directory: ' + args.D)
       for x in args_files:
         vprint(x)
-      
-    #for x in args_files:
-     # for y in args.t:
-     #   if not x.endswith(y):
-     #     args_files.remove(x)
+    
+		
 
     vprint('Combining the following images:')
     for x in args_files:
