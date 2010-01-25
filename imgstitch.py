@@ -53,12 +53,9 @@ class Argument:
 
   def __init__(self):
     self.v = 0
-    self.b = None
     self.D = "" 
     self.t = '*'
-    self.delete = 0
     self.f = ""
-    self.s = 0
     self.c = "black"
 
 
@@ -71,11 +68,8 @@ Example: python imgstitch.py image1.jpg image2.jpg
 
 python imgstitch.py  [OPTION] -D [DIRECTORY] [FILENAME]
 
--b [WIDTH]			Final image is no wider than WIDTH images.
 -D Directory		Scan entire directory instead of multiple files.
 -t [TYPE1]			Only get images of extension TYPE.  Only used in conjunction with -D
---delete			Delete images used to make up final image after.
--s					Read in arguments from Standard Input.
 -c					Change background filler color
 -v					Verbose output
 """
@@ -100,7 +94,7 @@ def vprint(str):
 def main(argv):
   global args, MasterWidth, MasterHeight, ImageFileList, filename, deletename
   try:
-      opts, args_files = getopt.getopt(argv, "vb:D:t:sc:", ["delete", "help"])
+      opts, args_files = getopt.getopt(argv, "vD:t:c:", ["help"])
 
     
   except getopt.GetoptError:
@@ -109,10 +103,8 @@ def main(argv):
     sys.exit(-1)
     
   for opt, arg in opts:
-    if opt == '-b':
-      args.b = arg
 
-    elif opt == '-v':
+    if opt == '-v':
       args.v = 1      
     
     elif opt == '-c':
@@ -123,27 +115,22 @@ def main(argv):
         print 'Directory does not exist'
         sys.exit()
       args.D = arg 
+      
     
     elif opt == '-t':
       args.t = arg
       
-    elif opt == '--delete':
-      args.delete = 1
       
-    elif opt == '-s':
-      args.s = arg
-    
     elif opt == '--help':
       usage()
       sys.exit(-1)
       
-  
-  if (args.s == 1):
-    print 'read from stdin' # update later
     
   else:
+  
     filename = args_files.pop(0)
-    final_image = Image.new("RGB", (MasterWidth, MasterHeight), args.c)
+    
+    
 
 
     if args.D != "":
@@ -157,9 +144,9 @@ def main(argv):
 
     vprint('Combining the following images:')
     for x in args_files:
+      
       try:
         im = Image.open(x)
-	
         vprint(x)
         
         
@@ -173,19 +160,22 @@ def main(argv):
         ImageFileList.append(x)      
         
       except:
-	if args.D != "":
-	  pass
-        else:
-          raise
+       if args.D != "":
+        pass
+       else:
+        raise
 
-    
+    final_image = Image.new("RGB", (MasterWidth, MasterHeight), args.c)
     offset = 0
     for x in ImageFileList:
      temp_image = Image.open(x)
      final_image.paste(temp_image, (offset, 0))
      offset += temp_image.size[0]
 
+    
+  
     final_image.save(filename)
+
       
       
     
