@@ -10,7 +10,7 @@
 #  python sparkdownloader.py [options] [FinalImageFilename] "image1" "image2" etc
 #     
 # Dependencies:
-#  none
+#  PIL 
 #
 # Disclaimer:
 #  By using this program you do so at your own risk. I assume no liability
@@ -43,36 +43,40 @@
 #-------------------------------------------------------------------------------------------------
 
 
-import getopt, sys, Image
+import getopt, sys, os
+from PIL import Image
 
 
 
 class Argument:
 
   def __init__(self):
+    self.v = 0
     self.b = None
-    self.D = 0
+    self.D = "" 
     self.t = []
     self.delete = 0
     self.f = ""
     self.s = 0
-		self.c = ""
+    self.c = ""
 
 
 def usage():
   print """
   
 Usage: python imgstitch.py  [OPTION]... [FILENAME] [FILES]
+       python imgstitch.py  [OPTION] -D [DIRECTORY] [FILENAME]
 Combine together [FILES] into one image
 Example: python imgstitch.py image1.jpg image2.jpg
 
 
 -b [WIDTH]		Final image is no wider than WIDTH images.
--D			Scan entire directory instead of multiple files.
+-D Directory		Scan entire directory instead of multiple files.
 -t [TYPE1]		Only get images of extension TYPE.  
 --delete		Delete images used to make up final image after.
 -s			Read in arguments from Standard Input.
 -c			Change background filler color
+-v			Verbose output
 """
 
 
@@ -84,29 +88,35 @@ filename = ""
 # List that holds all the image files
 ImageFileList = []
 
+def vprint(str):
+  global args
+  if args.v == 1:
+    print str
+
 
 def main(argv):
   global args, MasterWidth, MasterHeight, ImageFileList, filename
   try:
-			opts, args_files = getopt.getopt(argv, "b:Dt:sc:", ["delete", "help"])
-      if len(args_files) <= 1:
-        usage()
-        sys.exit(-1)
+      opts, args_files = getopt.getopt(argv, "vb:D:t:sc:", ["delete", "help"])
 
-      filename = args_files.pop(0)
     
   except getopt.GetoptError:
-    print 'Usage: python imgstitch.py  [OPTION]... [FILENAME] [FILES]'
+    print "Illegal arguments"
     print "Try 'python imgstitch.py --help' for more info"
     sys.exit(-1)
     
   for opt, arg in opts:
     if opt == '-b':
       args.b = arg
-      
+
+    elif opt == '-v':
+      args.v = 1      
     
     elif opt == '-D':
-      args.D = 1
+      if not os.path.exists (arg):
+        print 'Directory does not exist'
+        sys.exit()
+      args.D = arg 
     
     elif opt == '-t':
       args.t.append(arg)
@@ -126,10 +136,26 @@ def main(argv):
     print 'read from stdin' # update later
     
   else:
+    filename = args_files.pop(0)
 
+    if args.D != "":
+      import glob
+      args_files = glob.glob(os.path.join(args.D,  '*.*'))
+      vprint('Finding all files in directory: ' + args.D)
+      for x in args_files:
+        vprint(x)
+      
+    #for x in args_files:
+     # for y in args.t:
+     #   if not x.endswith(y):
+     #     args_files.remove(x)
+
+    vprint('Combining the following images:')
     for x in args_files:
       try:
         im = Image.open(x)
+	
+        vprint(x)
         
         
         MasterWidth += im.size[0]
@@ -142,7 +168,11 @@ def main(argv):
         ImageFileList.append(x)      
         
       except:
-        raise
+	if args.D != "":
+	  pass
+        else:
+          raise
+
     final_image = Image.new("RGB", (MasterWidth, MasterHeight))
     offset = 0
     for x in ImageFileList:

@@ -7,7 +7,7 @@
 #  python sparkdownloader.py [options] [FinalImageFilename] "image1" "image2" etc
 #     
 # Dependencies:
-#  none
+#  PIL
 #
 # Disclaimer:
 #  By using this program you do so at your own risk. I assume no liability
