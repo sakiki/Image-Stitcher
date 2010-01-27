@@ -57,6 +57,7 @@ class Argument:
     self.t = '*'
     self.f = ""
     self.c = "black"
+    self.debug = 0
 
 
 
@@ -95,7 +96,7 @@ def vprint(str):
 def main(argv):
   global args, MasterWidth, MasterHeight, ImageFileList, filename, deletename
   try:
-      opts, args_files = getopt.getopt(argv, "vD:t:c:", ["help"])
+      opts, args_files = getopt.getopt(argv, "vD:t:c:", ["help", "debug"])
 
     
   except getopt.GetoptError:
@@ -125,7 +126,9 @@ def main(argv):
     elif opt == '--help':
       usage()
       sys.exit(-1)
-      
+       
+    elif opt == '--debug':
+       args.debug = 1
     
   else:
   
@@ -195,6 +198,7 @@ if __name__ == "__main__":
 
 
   except:
-    import traceback
-    traceback.print_exc()
-    print 'weird exception'
+    if args.debug == 1:
+      import traceback
+      traceback.print_exc()
+    print 'Weird Exception - Was your syntax right?'
